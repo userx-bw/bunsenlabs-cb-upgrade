@@ -1,0 +1,7 @@
+#!/bin/bash
+dpkg-query -l tint2config #To check if packagename was installed, type:
+dpkg-query -l compton #also use dpkg-query that has a neater output for your purpose, and accepts wild cards, too.
+sudo -v
+sudo apt-get -s remove tint2conf 
+sleep 2s
+sudo apt-get update && sudo apt-get -s install compton 
