@@ -1,0 +1,14 @@
+#!/bin/bash
+
+## need to generate a new .gtk-bookmarks using there $USER name 
+
+user=$USER
+echo "${USER}"
+ #cat > /home/${USER}/gtk-bookmarks-test
+ touch /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Documents Documents' > /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Downloads Downloads' >> /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Music Music ' >> /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Pictures Pictures' >> /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Videos Videos' >>  /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Templates Templates' >> /home/${USER}/.gtk-bookmarks

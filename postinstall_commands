@@ -1,0 +1,37 @@
+# commands to run after installing all files and packages
+
+# add any needed extra groups
+for i in #cbnetwork
+do
+    if grep -q "^${i}:" /etc/group
+    then
+        msg "group $i already exists"
+    else
+        msg "adding group $i"
+        sudo addgroup $i || errmsg "failed to add group: $i"
+    fi
+done
+
+# add user to necessary extra groups
+# NB You should also check sysfiles2/etc/adduser.conf for default groups to add new users to
+for i in netdev #scanner #bluetooth fuse #cbnetwork
+do
+    sudo adduser $user $i || errmsg "failed to add user: $user to group: $i"
+done
+
+# make sure gksu runs in sudo mode
+sudo update-alternatives --set libgksu-gconf-defaults /usr/share/libgksu/debian/gconf-defaults.libgksu-sudo || errmsg "failed to edit alternative for libgksu-gconf-defaults"
+sudo update-gconf-defaults || errmsg "failed to update gconf defaults"
+
+# set cursor theme to pre-empt Adwaita
+sudo update-alternatives --set x-cursor-theme /usr/share/icons/DMZ-White/cursor.theme || errmsg "failed to edit alternative for x-cursor-theme"
+
+# add grub background
+sudo update-alternatives --install /usr/share/images/desktop-base/desktop-grub.png  desktop-grub /usr/share/backgrounds/bunsen/bunsen-images/bl-default/bl-grub.png 30 || errmsg "failed to add alternative for desktop-grub"
+sudo update-grub || errmsg "failed to update grub"
+
+# to pre-empt /usr/lib/bunsen/bunsen-user-setup/bl-user-setup
+#[[ -w "$HOME/.gtk-bookmarks" ]] && sed --in-place "s/REPLACEME/$user/" $HOME/.gtk-bookmarks || errmsg "failed to edit .gtk-bookmarks"
+#[[ -e $HOME/images/wallpapers/shared ]] || ln -s /usr/share/backgrounds $HOME/images/wallpapers/shared || errmsg "failed to add symlink to shared wallpapers"
+
+#touch $HOME/.config/bunsen/bl-setup || errmsg "failed to touch .config/bunsen/bl-setup"
