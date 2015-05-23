@@ -9,7 +9,7 @@
 # This install script is intended to be run on a newly installed
 # system with no personal settings or data. Attempts will be made to
 # backup any such data that might exist, but do not rely on it.
-#
+
 # USAGE
 # This script should come in a folder called bunsen-?-netinstall,
 # along with a collection of other necessary files.
@@ -22,7 +22,7 @@
 # backups of system files replaced during the install.
 
 ################################################
- 
+
 set -o nounset # do not accept unset variables
 # If not running in terminal, exit with message
 [[ -t 0 && -t 1 && -t 2 ]] || { echo "$0: This script must be run from a terminal" >&2; exit 1; }
@@ -164,98 +164,34 @@ fi
 
 }
 
-## NOT USED -- but may still have usable code so I am keeping it in here
-fix_cb_sources_list() { #placed in spacers so OP and read it eaiser 
-	echo;echo;echo;echo "Attempting to change your Sources List to Debian Jessie"
-	echo "if it fails to, then you can go back and manually change them"
-	echo "your self then run the script again. "
-	echo "If you need help then go here http://bunsenlabs.org"
-	echo "Then do a how to change sources.list search in the Forums"
-	echo;echo;echo;echo
-	sleep 5s
-	
+fix_cb_sources_list() {
+	echo "going into Fix_CB_Sources_List_Function"
 if [[ -s extra_repos ]]; then
     if [[ $(</etc/apt/sources.list) = *$(<extra_repos)* ]]
     then
         msg "extra_repos already appended to /etc/apt/sources.list"
     else
         msg "adding extra repositories to sources.list"
-        sed '/deb-src/s/^/#/' /etc/apt/sources.list 2> >( tee -a "$logfile" ) > cbsysfiles1/etc/apt/sources.list || giveup "There was a problem editing sources.list." 1
-        cat extra_repos 2> >( tee -a "$logfile" ) >> cbsysfiles1/etc/apt/sources.list || giveup "There was a problem appending extra_repos to sources.list." 1
+        sed '/deb-src/s/^/#/' /etc/apt/sources.list 2> >( tee -a "$logfile" ) > sysfiles1/etc/apt/sources.list || giveup "There was a problem editing sources.list." 1
+        cat extra_repos 2> >( tee -a "$logfile" ) >> sysfiles1/etc/apt/sources.list || giveup "There was a problem appending extra_repos to sources.list." 1
     fi
-elif [[ -r cbgen_sources ]]; then
-    if [[ -s  cbsysfiles1/etc/apt/sources.list ]]; then
-        msg "cbsysfiles1/etc/apt/sources.list already generated"
+elif [[ -r gen_sources ]]; then
+    if [[ -s  sysfiles1/etc/apt/sources.list ]]; then
+        msg "sysfiles1/etc/apt/sources.list already generated"
     else
         msg "generating new sources.list"
-        . cbgen_sources # commands to generate cbsysfiles1/etc/apt/sources.list
+        . gen_sources # commands to generate sysfiles1/etc/apt/sources.list
     fi
 fi
 
-[[ -s cbsysfiles1/etc/apt/sources.list ]] || giveup "There is no sources.list file." 1
-sleep 10s
-}
+[[ -s sysfiles1/etc/apt/sources.list ]] || giveup "There is no sources.list file." 1
 
-cleanup_cb_leftovers () {
-	sudo apt-get autoremove
 }
-
 remove_cb_customizations () { # removes just enough to get BL customizations installed
-	echo "Remove CB Custom installs"
+	echo "entering remove CB Customs "
 	sudo -v
-	sudo apt-get remove tint2conf compton-git cb-configs
-	# to remove whats left after removing CB stuff
-	cleanup_cb_leftovers	
+	sudo apt-get remove tint2conf compton-git cb-configs	
 }
-
-
-fix_cb_sources_list2 () { ## just move the old sources.list over into a back up file it's no longer needed
-							## then put a new fresh copy of Jessie's in
-		echo;echo;echo;echo "Attempting to change your Sources List to Debian Jessie"
-	echo "if it fails to, then you can go back and manually change them"
-	echo "your self then run the script again. "
-	echo "If you need help then go here http://bunsenlabs.org"
-	echo "Then do a how to change sources.list search in the Forums"
-	echo;echo;echo;echo
-	sleep 5s
-	
-	sudo -v
-	sudo mv /etc/apt/sources.list /etc/apt/sources.list.bk
-	sudo cp cbsysfiles1/etc/apt/sources.list /etc/apt/
-	
-	
-	remove_cb_customizations  
-}
-
-## NOT USED -- May change it back -- 
-cb_install_update () {
- echo "If you are trying the upgrade from Crunchbang to BunsenLabs / Debian 8 then enter #!bl8"
- echo "or press enter again to continue with your experimental BL Netinstall"
- echo "Thank you for your need to know, try, and hopefully not cry if this does not"
- echo "turn out the way you'd like it to. But my fingers are crossed just for you :D" 
- read ans
-   if [[ "${ans}" = '#!bl8' ]] ; then
-       fix_cb_sources_list2
-   fi
-}
-
-cb_install_update2 () {
-	msg "If your see anything that has to do with Crunchbang and you're Not upgrading you should be ok ... maybe :D"
-	     fix_cb_sources_list2
-}
-
-cb_fix_thunar_bookmarks () {
-	#user=$USER
-    echo "${USER}"
-    touch /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Documents Documents' > /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Downloads Downloads' >> /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Music Music ' >> /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Pictures Pictures' >> /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Videos Videos' >>  /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Templates Templates' >> /home/${USER}/.gtk-bookmarks
-}
-
 # End Functions
 trap 'giveup "Script terminated." 1' 1 2 3 15
 [[ $user = root ]] && giveup "This script should be run by a normal user, not root" 1
@@ -306,19 +242,22 @@ otherwise it would be safer to stop.
 Would you like to continue anyway?" 1; } 
 # ADDED #! UPGRADE MESSAGE HERE
 # is X already installed? FIXME Is this the best way to check if there is a desktop system installed already?
-hash startx > /dev/null 2>&1 && { warnlog "Command 'startx' is available. Crunchbang / BL upgrade so a Desktop system already installed."
-    confirm "If you are trying to upgrade from Crunchbang to Jessie / BL and only have openbox as your WM 
-installed or whould just like to give it a whril anyways just to see what will happen then to so
-But Be warned If you continue with this installation you may have problems,
-or even end up with an unusable system." ; }
+hash startx > /dev/null 2>&1 && { warnlog "Command 'startx' is available. Desktop system already installed?"
+    confirm "You seem to have some kind of desktop environment already installed.
+If you continue with this installation you may have problems,
+or even end up with an unusable system.
+If you are upgrading from Crunchbang and only have openbox installed 
+then you should be OK.
+Would you like to continue anyway?" 1 ; }
 
-#run Crunchbang prep to upgrade to Jessie / BL
-cb_install_update2
 
-bigmsg "Installing new packages.
-There may be around 1000 packages to install,
- so this will probably take a while..."
+ msg "if you wnat to upgrade to CrunchBang the enter #!"
  
+ read ans
+ 
+ if [[ "${ans}" = "#!" ]] ; then 
+		remove_cb_customizations && fix_cb_sources_list
+  fi
 
 # can use sudo?
 echo "
@@ -483,9 +422,9 @@ before running the script again." 1
 
 
 ########## end file copying functions ##########
-
+# MOVED UP AND MADE INTO A FUNTION replacing the sources.list code
 bigmsg "Adjusting package management (apt) settings."
-# MOVED UP AND MADE INTO A FUNTION 
+
 fix_sources_list
 
 msg "installing apt configuration files"
@@ -595,15 +534,6 @@ bigmsg "system files installed"
 #install_userdir /etc/skel $HOME
 #shopt -u dotglob
 
-
-# clean up debs not needed
-msg "Removing the leftovers"
-cleanup_cb_leftovers
-
-
-
-
-
 #bigmsg "Files updated."
 
 # final tweaking
@@ -611,14 +541,6 @@ bigmsg "Adjusting some system settings."
 [[ -r postinstall_commands ]] && {
     . postinstall_commands
 }
-
-# fix book marks to make them corraspond to Debian 8 new way of doing it
-# Does not touch OP data in the "Obsolete Directories"
-msg "fixing thunar bookmarks / setting them to Debians
-no data will be move into then new Directories
-you will have to do that yourself.
-Almost Done"
-cb_fix_thunar_bookmarks
 
 
 bigmsg "INSTALL FINISHED!"

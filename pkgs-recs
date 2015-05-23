@@ -19,9 +19,7 @@ hsetroot
 conky-all
 compton
 #terminator
-#added this
-deluge
-pcmanfm
+#need to add a battery icon
 # done adding
 xfce4-terminal
 geany
@@ -144,6 +142,9 @@ catfish
 hexchat
 transmission-gtk
 xfce4-power-manager
+
+## added this to see if battery icon will show
+mate-power-manager
 #xfce4-power-manager-plugins
 ghostscript
 e2fsprogs

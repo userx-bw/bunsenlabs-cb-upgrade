@@ -164,7 +164,6 @@ fi
 
 }
 
-## NOT USED -- but may still have usable code so I am keeping it in here
 fix_cb_sources_list() { #placed in spacers so OP and read it eaiser 
 	echo;echo;echo;echo "Attempting to change your Sources List to Debian Jessie"
 	echo "if it fails to, then you can go back and manually change them"
@@ -204,7 +203,7 @@ remove_cb_customizations () { # removes just enough to get BL customizations ins
 	echo "Remove CB Custom installs"
 	sudo -v
 	sudo apt-get remove tint2conf compton-git cb-configs
-	# to remove whats left after removing CB stuff
+	
 	cleanup_cb_leftovers	
 }
 
@@ -227,7 +226,6 @@ fix_cb_sources_list2 () { ## just move the old sources.list over into a back up 
 	remove_cb_customizations  
 }
 
-## NOT USED -- May change it back -- 
 cb_install_update () {
  echo "If you are trying the upgrade from Crunchbang to BunsenLabs / Debian 8 then enter #!bl8"
  echo "or press enter again to continue with your experimental BL Netinstall"
@@ -236,25 +234,11 @@ cb_install_update () {
  read ans
    if [[ "${ans}" = '#!bl8' ]] ; then
        fix_cb_sources_list2
-   fi
+  # else 
+   # continue # confirm 1
+fi
 }
 
-cb_install_update2 () {
-	msg "If your see anything that has to do with Crunchbang and you're Not upgrading you should be ok ... maybe :D"
-	     fix_cb_sources_list2
-}
-
-cb_fix_thunar_bookmarks () {
-	#user=$USER
-    echo "${USER}"
-    touch /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Documents Documents' > /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Downloads Downloads' >> /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Music Music ' >> /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Pictures Pictures' >> /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Videos Videos' >>  /home/${USER}/.gtk-bookmarks
-echo 'file:///home/'${USER}'/Templates Templates' >> /home/${USER}/.gtk-bookmarks
-}
 
 # End Functions
 trap 'giveup "Script terminated." 1' 1 2 3 15
@@ -306,19 +290,17 @@ otherwise it would be safer to stop.
 Would you like to continue anyway?" 1; } 
 # ADDED #! UPGRADE MESSAGE HERE
 # is X already installed? FIXME Is this the best way to check if there is a desktop system installed already?
-hash startx > /dev/null 2>&1 && { warnlog "Command 'startx' is available. Crunchbang / BL upgrade so a Desktop system already installed."
-    confirm "If you are trying to upgrade from Crunchbang to Jessie / BL and only have openbox as your WM 
-installed or whould just like to give it a whril anyways just to see what will happen then to so
-But Be warned If you continue with this installation you may have problems,
-or even end up with an unusable system." ; }
+hash startx > /dev/null 2>&1 && { warnlog "Command 'startx' is available. Desktop system already installed?"
+    confirm "You seem to have some kind of desktop environment already installed.
+If you continue with this installation you may have problems,
+or even end up with an unusable system.
+or
+If you are trying to upgrade from Crunchbang to Jessie / BL and only have openbox as your WM 
+installed or whould just like to give it a whril anyways just to see what will happen then." ; }
+#Question OP
 
-#run Crunchbang prep to upgrade to Jessie / BL
-cb_install_update2
 
-bigmsg "Installing new packages.
-There may be around 1000 packages to install,
- so this will probably take a while..."
- 
+cb_install_update
 
 # can use sudo?
 echo "
@@ -483,9 +465,9 @@ before running the script again." 1
 
 
 ########## end file copying functions ##########
-
+# MOVED UP AND MADE INTO A FUNTION replacing the sources.list code
 bigmsg "Adjusting package management (apt) settings."
-# MOVED UP AND MADE INTO A FUNTION 
+
 fix_sources_list
 
 msg "installing apt configuration files"
@@ -597,12 +579,7 @@ bigmsg "system files installed"
 
 
 # clean up debs not needed
-msg "Removing the leftovers"
 cleanup_cb_leftovers
-
-
-
-
 
 #bigmsg "Files updated."
 
@@ -611,14 +588,6 @@ bigmsg "Adjusting some system settings."
 [[ -r postinstall_commands ]] && {
     . postinstall_commands
 }
-
-# fix book marks to make them corraspond to Debian 8 new way of doing it
-# Does not touch OP data in the "Obsolete Directories"
-msg "fixing thunar bookmarks / setting them to Debians
-no data will be move into then new Directories
-you will have to do that yourself.
-Almost Done"
-cb_fix_thunar_bookmarks
 
 
 bigmsg "INSTALL FINISHED!"
