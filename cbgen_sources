@@ -1,1 +1,0 @@
-sed -r '/deb-src/s/^/#/;s/(^deb [^ ]*)( jessie | jessie-updates | jessie\/updates | jessie-backports ).*$/\1\2 main contrib non-free/g' /etc/apt/sources.list  2> >( tee -a "$logfile" ) > cbsysfiles1/etc/apt/sources.list || giveup "There was a problem editing sources.list." 1
