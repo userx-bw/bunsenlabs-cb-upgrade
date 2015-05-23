@@ -1,0 +1,4 @@
+# cp debian.iso /dev/sdX
+# sync
+
+Making sure the USB device is first unmounted.
