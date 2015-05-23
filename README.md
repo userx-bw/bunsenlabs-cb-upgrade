@@ -87,10 +87,10 @@ I have no idea if that will even work with this as once your Jessie you stay Jes
 
 This is totally experimental - as this scrpit may or should still work as 
 a NetInstall as well. It just adds a automount.plka that you may have to remove
-if you ues this for a net install. 
+if you have issues with automounting drives after using this for a net install. 
 
-I have not personally teasted this modded script with a netinstall, it still
-may work. 
+I have not personally tested this modded script with a netinstall, it still
+may work as such.
 
 
 DEBIAN NETINSTALL HINTS
