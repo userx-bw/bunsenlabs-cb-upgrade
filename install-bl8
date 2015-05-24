@@ -628,7 +628,7 @@ no data will be move into then new Directories
 you will have to do that yourself.
 Almost Done"
 cb_fix_thunar_bookmarks
-add_autostart_mods
+#add_autostart_mods  #experimental 
 
 
 bigmsg "INSTALL FINISHED!"
