@@ -256,15 +256,10 @@ echo 'file:///home/'${USER}'/Videos Videos' >>  /home/${USER}/.gtk-bookmarks
 echo 'file:///home/'${USER}'/Templates Templates' >> /home/${USER}/.gtk-bookmarks
 }
 
-add_autostart_mods () {
-	echo "hey autostart bat"
-	touch /home/${USER}/.config/openbox/autostart
-	echo " this is a last minute testing to install mate-power-manager into"
-	echo " openbox/autostart its at the end of the file so maybe it not work"  
-	echo 'Added by me '${USER}' ' >> /home/${USER}/.config/openbox/autostart
-	echo 'mate-power-manager &' >> /home/${USER}/.config/openbox/autostart
+update_openbox_autostart_mods () {
+	mv $HOME/.config/openbox/autostart $HOME/.config/openbox/autostart-baked-up
+	cp cbsysfiles2/config/openbox/autostart $HOME/.config/openbox/ 
 }
-
 # End Functions
 trap 'giveup "Script terminated." 1' 1 2 3 15
 [[ $user = root ]] && giveup "This script should be run by a normal user, not root" 1
@@ -628,7 +623,7 @@ no data will be move into then new Directories
 you will have to do that yourself.
 Almost Done"
 cb_fix_thunar_bookmarks
-#add_autostart_mods  #experimental 
+update_openbox_autostart_mods
 
 
 bigmsg "INSTALL FINISHED!"
