@@ -288,7 +288,7 @@ hash startx > /dev/null 2>&1 && { warnlog "Command 'startx' is available. Crunch
 installed or whould just like to give it a whril anyways just to see what will happen then do so
 But Be warned If you continue with this installation you may have problems,
 or even end up with an unusable system. This too applies if you are using this
-for a NetInstall as well. Or Ctrl+C then run install instead" 1; }
+for a NetInstall as well." 1; }
 
 
 
