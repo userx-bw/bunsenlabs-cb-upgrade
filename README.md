@@ -40,11 +40,10 @@ then run  $./install-bl8
 
 or
 
-wget https://github.com/userx-bw/bunsenlabs-cb-upgrade/archive/master.tar.gz
+wget http://github.com/userx-bw/bunsenlabs-cb-upgrade/archive/master.tar.gz
 tar -xpf master.tar.gz
 cd bunsenlabs-cb-upgrade-master
 ./install-bl8
- 
 
 The installation process will start.
 Follow any prompts that appear on the screen.
