@@ -144,7 +144,8 @@ net_test() {
 
 ############### ADDED BY USERX-BW (enhancements) #################################
 cleanup_cb_leftovers () {
-	sudo apt-get autoremove
+		sudo -v
+	    sudo apt-get autoremove
 }
 
 remove_cb_customizations () { # removes just enough to get BL customizations installed
@@ -176,13 +177,13 @@ fix_cb_sources_list2 () { ## just move the old sources.list over into a back up 
 
 
 cb_install_update2 () {
-	msg "If your see anything that has to do with Crunchbang and you're Not upgrading you should be ok ... maybe :D"
+	msg "If your see anything that has to do with Crunchbang and you're Not upgrading you should be ok ... :D"
 	     fix_cb_sources_list2
 }
 
 cb_fix_thunar_bookmarks () {
 	#user=$USER
-    echo "${USER}"
+    echo "But first ${USER} before that takes place "
     touch /home/${USER}/.gtk-bookmarks
 echo 'file:///home/'${USER}'/Documents Documents' > /home/${USER}/.gtk-bookmarks
 echo 'file:///home/'${USER}'/Downloads Downloads' >> /home/${USER}/.gtk-bookmarks
@@ -193,7 +194,7 @@ echo 'file:///home/'${USER}'/Templates Templates' >> /home/${USER}/.gtk-bookmark
 }
 
 update_openbox_autostart_mods () {
-	echo "hey autostart bat"
+	
 	#touch /home/${USER}/.config/openbox/autostart
     mv $HOME/.config/openbox/autostart $HOME/.config/openbox/autostart-baked-up
 	cp cbsysfiles2/config/openbox/autostart $HOME/.config/openbox/ 
@@ -202,6 +203,9 @@ update_openbox_autostart_mods () {
 upgrade_bl () {
 	$HOME/.bunsen-netinstall-logs/upgrade-bunsen-pkgs --add bunsen-os-release
            sudo apt-get install bunsen-os-release
+           
+           msg "checking for final clean-up"
+           cleanup_cb_leftovers
 }
 
 getanswer () {
@@ -210,8 +214,7 @@ case "$choice" in
   y|Y ) upgrade_bl ;; # function to get and install then finish this script
 esac
 
-msg "checking for final clean-up"
-cleanup_cb_leftovers
+
 }
 
 
@@ -282,7 +285,8 @@ hash startx > /dev/null 2>&1 && { warnlog "Command 'startx' is available. Crunch
     confirm "If you are trying to upgrade from Crunchbang to Jessie / BL and only have openbox as your WM 
 installed or whould just like to give it a whril anyways just to see what will happen then do so
 But Be warned If you continue with this installation you may have problems,
-or even end up with an unusable system." 1; }
+or even end up with an unusable system. This too applies if you are using this
+for a NetInstall as well." 1; }
 
 ####  ADDED BY USERX-BW #########
 
@@ -546,9 +550,9 @@ bigmsg "New packages installed"
 
 # get stuff from GitHub, make local repo, install from there
 bigmsg "Importing packages from GitHub"
-[[ -r github_install ]] && {
-    . github_install
- }
+#[[ -r github_install ]] && {
+ #   . github_install
+ #}
 
 
 bigmsg "Copying in new system files.
@@ -586,15 +590,6 @@ bigmsg "system files installed"
 #bigmsg "Files updated."
 
 
-#### ADDED USERX-BW CODE ############
-
-# clean up debs not needed
-msg "Removing the leftovers"
-cleanup_cb_leftovers
-
-#####################################
-
-
 
 # final tweaking
 bigmsg "Adjusting some system settings."
@@ -609,7 +604,7 @@ bigmsg "Adjusting some system settings."
 msg "fixing thunar bookmarks / setting them to Debians
 no data will be move into then new Directories
 you will have to do that yourself.
-Almost Done"
+Hey guess what $USER -- > Almost Done..."
 cb_fix_thunar_bookmarks
 update_openbox_autostart_mods 
 
@@ -623,6 +618,16 @@ should you happen to have installed that. Jonhraff
             " # < --- ended " here 
 #call to see if OP wants to update some more or finish this one first
 getanswer
+
+
+#### ADDED USERX-BW CODE ############
+
+# clean up debs not needed
+
+cleanup_cb_leftovers
+
+#####################################
+
 
 ########################################################################################3
 bigmsg "INSTALL FINISHED!"
