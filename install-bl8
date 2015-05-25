@@ -546,9 +546,9 @@ bigmsg "New packages installed"
 
 # get stuff from GitHub, make local repo, install from there
 bigmsg "Importing packages from GitHub"
-#[[ -r github_install ]] && {
-#    . github_install
-# }
+[[ -r github_install ]] && {
+    . github_install
+ }
 
 
 bigmsg "Copying in new system files.
