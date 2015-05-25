@@ -38,6 +38,13 @@ unzip it to where ever you choose to. Then go to a tty using Ctrl + Alt + (F4 - 
 then log in - navagate your way into where you put bunsenlabs-cb-upgrade-master directory.
 then run  $./install-bl8 
 
+or
+
+wget https://github.com/userx-bw/bunsenlabs-cb-upgrade/archive/master.tar.gz 
+ tar -xpf master.tar.gz
+ cd bunsenlabs-cb-upgrade-master
+ ./install-bl8
+ 
 
 The installation process will start.
 Follow any prompts that appear on the screen.
