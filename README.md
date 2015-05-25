@@ -90,8 +90,7 @@ a NetInstall as well. It just adds a automount.plka that you may have to remove
 if you have issues with automounting drives after using this for a net install. 
 
 I have not personally tested this modded script with a netinstall, it still
-may work as such.
-
+may - should  work as such.  
 
 DEBIAN NETINSTALL HINTS
 
@@ -116,3 +115,6 @@ the netinstall installer will add what is needed.
 (Some software items will be marked with an asterisk, indicating that
 they have been preselected.
 Use the up/down arrows to move, and the spacebar to toggle selection.)
+
+The netinstall download and links to documentation can be found here:
+http://www.debian.org/CD/netinst/

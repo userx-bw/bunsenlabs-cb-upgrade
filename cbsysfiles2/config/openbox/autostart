@@ -30,7 +30,7 @@ hsetroot -solid "#2E3436" &
 
 ## ADDED BY USERX-BW #! UPGRADE
 #Streaming Radio
-#radiotray &
+radiotray &
 
 nitrogen --restore &
 

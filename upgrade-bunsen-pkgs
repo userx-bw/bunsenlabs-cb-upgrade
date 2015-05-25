@@ -16,7 +16,8 @@ place built .deb files in local repository."
 set -o nounset # do not accept unset variables
 
 # If not running in terminal, exit with message
-[[ -t 0 && -t 1 && -t 2 ]] || { echo "$0: This script must be run from a terminal" >&2; exit 1; }
+## NOT NEEDED IT WORKS IN TTY TOO !!!!!!!
+###[[ -t 0 && -t 1 && -t 2 ]] || { echo "$0: This script must be run from a terminal" >&2; exit 1; }
 
 readonly LOCAL_REPO='/var/local/debs'
 

@@ -9,7 +9,7 @@
 # This install script is intended to be run on a newly installed
 # system with no personal settings or data. Attempts will be made to
 # backup any such data that might exist, but do not rely on it.
-#
+
 # USAGE
 # This script should come in a folder called bunsen-?-netinstall,
 # along with a collection of other necessary files.
@@ -22,7 +22,7 @@
 # backups of system files replaced during the install.
 
 ################################################
- 
+
 set -o nounset # do not accept unset variables
 # If not running in terminal, exit with message
 [[ -t 0 && -t 1 && -t 2 ]] || { echo "$0: This script must be run from a terminal" >&2; exit 1; }
@@ -41,7 +41,7 @@ logfile=error.log # temporary logfile in installer directory
 exec > >( tee -a "$logfile" ) 2>&1
 
 user=$USER
-#Functions
+
 msg() {
     echo "
     $1
@@ -140,62 +140,9 @@ net_test() {
 }
 
 
-fix_sources_list() {
-	echo "going into Fix_Sources_List_Function"
-if [[ -s extra_repos ]]; then
-    if [[ $(</etc/apt/sources.list) = *$(<extra_repos)* ]]
-    then
-        msg "extra_repos already appended to /etc/apt/sources.list"
-    else
-        msg "adding extra repositories to sources.list"
-        sed '/deb-src/s/^/#/' /etc/apt/sources.list 2> >( tee -a "$logfile" ) > sysfiles1/etc/apt/sources.list || giveup "There was a problem editing sources.list." 1
-        cat extra_repos 2> >( tee -a "$logfile" ) >> sysfiles1/etc/apt/sources.list || giveup "There was a problem appending extra_repos to sources.list." 1
-    fi
-elif [[ -r gen_sources ]]; then
-    if [[ -s  sysfiles1/etc/apt/sources.list ]]; then
-        msg "sysfiles1/etc/apt/sources.list already generated"
-    else
-        msg "generating new sources.list"
-        . gen_sources # commands to generate sysfiles1/etc/apt/sources.list
-    fi
-fi
 
-[[ -s sysfiles1/etc/apt/sources.list ]] || giveup "There is no sources.list file." 1
 
-}
-
-## NOT USED -- but may still have usable code so I am keeping it in here
-fix_cb_sources_list() { #placed in spacers so OP and read it eaiser 
-	echo;echo;echo;echo "Attempting to change your Sources List to Debian Jessie"
-	echo "if it fails to, then you can go back and manually change them"
-	echo "your self then run the script again. "
-	echo "If you need help then go here http://bunsenlabs.org"
-	echo "Then do a how to change sources.list search in the Forums"
-	echo;echo;echo;echo
-	sleep 5s
-	
-if [[ -s extra_repos ]]; then
-    if [[ $(</etc/apt/sources.list) = *$(<extra_repos)* ]]
-    then
-        msg "extra_repos already appended to /etc/apt/sources.list"
-    else
-        msg "adding extra repositories to sources.list"
-        sed '/deb-src/s/^/#/' /etc/apt/sources.list 2> >( tee -a "$logfile" ) > cbsysfiles1/etc/apt/sources.list || giveup "There was a problem editing sources.list." 1
-        cat extra_repos 2> >( tee -a "$logfile" ) >> cbsysfiles1/etc/apt/sources.list || giveup "There was a problem appending extra_repos to sources.list." 1
-    fi
-elif [[ -r cbgen_sources ]]; then
-    if [[ -s  cbsysfiles1/etc/apt/sources.list ]]; then
-        msg "cbsysfiles1/etc/apt/sources.list already generated"
-    else
-        msg "generating new sources.list"
-        . cbgen_sources # commands to generate cbsysfiles1/etc/apt/sources.list
-    fi
-fi
-
-[[ -s cbsysfiles1/etc/apt/sources.list ]] || giveup "There is no sources.list file." 1
-sleep 10s
-}
-
+############### ADDED BY USERX-BW (enhancements) #################################
 cleanup_cb_leftovers () {
 	sudo apt-get autoremove
 }
@@ -227,17 +174,6 @@ fix_cb_sources_list2 () { ## just move the old sources.list over into a back up 
 	remove_cb_customizations  
 }
 
-## NOT USED -- May change it back -- 
-cb_install_update () {
- echo "If you are trying the upgrade from Crunchbang to BunsenLabs / Debian 8 then enter #!bl8"
- echo "or press enter again to continue with your experimental BL Netinstall"
- echo "Thank you for your need to know, try, and hopefully not cry if this does not"
- echo "turn out the way you'd like it to. But my fingers are crossed just for you :D" 
- read ans
-   if [[ "${ans}" = '#!bl8' ]] ; then
-       fix_cb_sources_list2
-   fi
-}
 
 cb_install_update2 () {
 	msg "If your see anything that has to do with Crunchbang and you're Not upgrading you should be ok ... maybe :D"
@@ -257,10 +193,38 @@ echo 'file:///home/'${USER}'/Templates Templates' >> /home/${USER}/.gtk-bookmark
 }
 
 update_openbox_autostart_mods () {
-	mv $HOME/.config/openbox/autostart $HOME/.config/openbox/autostart-baked-up
+	echo "hey autostart bat"
+	#touch /home/${USER}/.config/openbox/autostart
+    mv $HOME/.config/openbox/autostart $HOME/.config/openbox/autostart-baked-up
 	cp cbsysfiles2/config/openbox/autostart $HOME/.config/openbox/ 
 }
-# End Functions
+
+upgrade_bl () {
+	$HOME/.bunsen-netinstall-logs/upgrade-bunsen-pkgs --add bunsen-os-release
+           sudo apt-get install bunsen-os-release
+}
+
+getanswer () {
+	read -p "(y/n)?" choice
+case "$choice" in 
+  y|Y ) upgrade_bl ;; # function to get and install then finish this script
+esac
+
+msg "checking for final clean-up"
+cleanup_cb_leftovers
+}
+
+
+
+
+
+
+################################################ END HERE ####################
+
+
+
+
+
 trap 'giveup "Script terminated." 1' 1 2 3 15
 [[ $user = root ]] && giveup "This script should be run by a normal user, not root" 1
 
@@ -300,29 +264,32 @@ logfile="$log_dir"/install.log # this logfile will remain after the install
 exec > >( tee -a "$logfile" ) 2>&1
 bigmsg "messages are being saved to $logfile"
 cp -f pkgs-recs pkgs-norecs config upgrade-bunsen-pkgs undo "$log_dir"
-# ADDED UPGRADE TO #! MESSAGE HERE
-# check debian version FIXME Is /etc/debian_version the best way? 
+
+############ MODDED MESSAGE BY USERX-BW #####################
+# check debian version FIXME Is /etc/debian_version the best way?
 grep -q '\(jessie\|\(^\|[^a-zA-Z0-9.]\)8\($\|[^a-zA-Z0-9]\)\)' /etc/debian_version && msg "Debian version: OK"|| { warnlog "/etc/debian_version reads: $(cat /etc/debian_version)"
-    confirm "You do not appear to have Debian Jessie installed.
+     confirm "You do not appear to have Debian Jessie installed.
+    
 If you think this is incorrect, or if you are upgrading from Crunchbang 
 you may wish to continue with the installation,
 otherwise it would be safer to stop.
-Would you like to continue anyway?" 1; } 
-# ADDED #! UPGRADE MESSAGE HERE
+Would you like to continue anyway?" 1; }
+
+
+############ MODDED MESSAGE BY USERX-BW #####################
 # is X already installed? FIXME Is this the best way to check if there is a desktop system installed already?
 hash startx > /dev/null 2>&1 && { warnlog "Command 'startx' is available. Crunchbang / BL upgrade so a Desktop system already installed."
     confirm "If you are trying to upgrade from Crunchbang to Jessie / BL and only have openbox as your WM 
-installed or whould just like to give it a whril anyways just to see what will happen then to so
+installed or whould just like to give it a whril anyways just to see what will happen then do so
 But Be warned If you continue with this installation you may have problems,
-or even end up with an unusable system." ; }
+or even end up with an unusable system." 1; }
+
+####  ADDED BY USERX-BW #########
 
 #run Crunchbang prep to upgrade to Jessie / BL
 cb_install_update2
 
-bigmsg "Installing new packages.
-There may be around 1000 packages to install,
- so this will probably take a while..."
- 
+#############################
 
 # can use sudo?
 echo "
@@ -485,12 +452,29 @@ before running the script again." 1
     done
 }
 
-
 ########## end file copying functions ##########
 
 bigmsg "Adjusting package management (apt) settings."
-# MOVED UP AND MADE INTO A FUNTION 
-fix_sources_list
+
+if [[ -s extra_repos ]]; then
+    if [[ $(</etc/apt/sources.list) = *$(<extra_repos)* ]]
+    then
+        msg "extra_repos already appended to /etc/apt/sources.list"
+    else
+        msg "adding extra repositories to sources.list"
+        sed '/deb-src/s/^/#/' /etc/apt/sources.list 2> >( tee -a "$logfile" ) > sysfiles1/etc/apt/sources.list || giveup "There was a problem editing sources.list." 1
+        cat extra_repos 2> >( tee -a "$logfile" ) >> sysfiles1/etc/apt/sources.list || giveup "There was a problem appending extra_repos to sources.list." 1
+    fi
+elif [[ -r gen_sources ]]; then
+    if [[ -s  sysfiles1/etc/apt/sources.list ]]; then
+        msg "sysfiles1/etc/apt/sources.list already generated"
+    else
+        msg "generating new sources.list"
+        . gen_sources # commands to generate sysfiles1/etc/apt/sources.list
+    fi
+fi
+
+[[ -s sysfiles1/etc/apt/sources.list ]] || giveup "There is no sources.list file." 1
 
 msg "installing apt configuration files"
 
@@ -562,9 +546,9 @@ bigmsg "New packages installed"
 
 # get stuff from GitHub, make local repo, install from there
 bigmsg "Importing packages from GitHub"
- [[ -r github_install ]] && {
-    . github_install
-}
+#[[ -r github_install ]] && {
+#    . github_install
+# }
 
 
 bigmsg "Copying in new system files.
@@ -593,28 +577,32 @@ shopt -u dotglob
 bigmsg "system files installed"
 
 #bigmsg "Updating your personal configuration files.
-#Replaced files will be backed up with a suffix of $backup_suffix"
+#Replaced files wil be backed up with a suffix of $backup_suffix"
 
 #shopt -s dotglob # want dotfiles too
 #install_userdir /etc/skel $HOME
 #shopt -u dotglob
 
+#bigmsg "Files updated."
+
+
+#### ADDED USERX-BW CODE ############
 
 # clean up debs not needed
 msg "Removing the leftovers"
 cleanup_cb_leftovers
 
+#####################################
 
 
-
-
-#bigmsg "Files updated."
 
 # final tweaking
 bigmsg "Adjusting some system settings."
 [[ -r postinstall_commands ]] && {
     . postinstall_commands
 }
+
+####  ADDED BY USERX-BW #########
 
 # fix book marks to make them corraspond to Debian 8 new way of doing it
 # Does not touch OP data in the "Obsolete Directories"
@@ -623,9 +611,20 @@ no data will be move into then new Directories
 you will have to do that yourself.
 Almost Done"
 cb_fix_thunar_bookmarks
-update_openbox_autostart_mods
+update_openbox_autostart_mods 
 
+## BL OS UPDATES 
+bigmsg "would like to attempt to install the BunsenLabs  bunsen-os-release now?
+you an do this later by adding this to your command line
+~/.bunsen-netinstall-logs/upgrade-bunsen-pkgs --add bunsen-os-release
+sudo apt-get install bunsen-os-release
+But be aware that at the moment it breaks software-properties-gtk, 
+should you happen to have installed that. Jonhraff
+            " # < --- ended " here 
+#call to see if OP wants to update some more or finish this one first
+getanswer
 
+########################################################################################3
 bigmsg "INSTALL FINISHED!"
 confirm "You need to restart your computer to log into your new system.
 Would you like to continue to restart now,
