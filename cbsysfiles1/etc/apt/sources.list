@@ -1,9 +1,16 @@
-### ADDED BY SCRIPT --
 
-## DEBIAN
-deb http://http.debian.net/debian jessie main contrib non-free
-#deb-src http://http.debian.net/debian jessie main contrib non-free
 
-## DEBIAN SECURITY
-deb http://security.debian.org/ jessie/updates main
-#deb-src http://security.debian.org/ jessie/updates main
+## ADDED BY #! to BL UPGRADE userx-bw todays date :)
+
+## DEBIAN JESSIE MAIN
+deb http://ftp.us.debian.org/debian jessie main contrib non-free
+#deb-src http://ftp.us.debian.org/jessie stable main contrib non-free
+
+## DEBIAN JESSIE UPDATES
+deb http://ftp.debian.org/debian/ jessie-updates main contrib non-free
+#deb-src http://ftp.debian.org/debian/ jessie-updates main contrib non-free
+
+
+## DEBIAN JESSIE SECURITY
+deb http://security.debian.org/ jessie/updates main contrib non-free
+#deb-src http://security.debian.org/ jessie/updates main contrib non-free

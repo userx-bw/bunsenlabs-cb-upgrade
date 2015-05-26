@@ -204,14 +204,6 @@ update_openbox_autostart_mods () {
 	cp cbsysfiles2/config/openbox/autostart $HOME/.config/openbox/ 
 }
 
-upgrade_bl () {
-	$HOME/.bunsen-netinstall-logs/upgrade-bunsen-pkgs --add bunsen-os-release
-           sudo apt-get install bunsen-os-release
-           
-           bigmsg "checking for final clean-up"
-           cleanup_cb_leftovers
-}
-
 getanswer () {
 	read -p "(y/n)?" choice
 case "$choice" in 
@@ -612,21 +604,9 @@ you will have to do that yourself."
 
 bigmsg "Hey guess what $USER -- > Almost Done...
 
-" # <-- " stops there
+" # <-- " stops there  because I wanted it to. :) 
 cb_fix_thunar_bookmarks
 update_openbox_autostart_mods 
-
-## BL OS UPDATES 
-bigmsg "would like to attempt to install the BunsenLabs  bunsen-os-release now?
-if not then you an do this later by adding this to your command line in Term
-~/.bunsen-netinstall-logs/upgrade-bunsen-pkgs --add bunsen-os-release
-sudo apt-get install bunsen-os-release
---------------      NOTICE   --------------
-But be aware that at the moment it breaks software-properties-gtk, 
-should you happen to have installed that. Jonhraff" # < --- ended " here 
-#call to see if OP wants to update some more or finish this one first
-getanswer
-
 
 #### ADDED USERX-BW CODE ############
 
