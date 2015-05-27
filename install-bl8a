@@ -601,8 +601,10 @@ bigmsg "Apt settings adjusted."
     . apt-keys
 }
 
-bigmsg "Installing packages needed for the system.
-This may take some time."
+bigmsg "Upgrading system before install
+There may be around 1000 packages to install.
+(this may take a little while)"
+
 #bigmsg "Please press 'y' if prompted at some point."
 
 msg "updating apt database..."
