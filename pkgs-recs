@@ -18,9 +18,12 @@ nitrogen
 hsetroot
 conky-all
 compton
+#added #############
+radiotray #added #############
+#deluge
+#pcmanfm
 #terminator
-#need to add a battery icon
-# done adding
+##########
 xfce4-terminal
 geany
 mirage
@@ -140,8 +143,8 @@ galculator
 gigolo
 catfish
 hexchat
-transmission-gtk
-xfce4-power-manager
+#transmission-gtk
+#xfce4-power-manager
 
 ## added this to see if battery icon will show
 mate-power-manager

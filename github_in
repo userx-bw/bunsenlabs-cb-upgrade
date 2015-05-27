@@ -1,0 +1,8 @@
+
+
+
+
+bigmsg "Importing packages from GitHub"
+ [[ -r github_install ]] && {
+    . github_install
+}

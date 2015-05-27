@@ -1,0 +1,10 @@
+#!/bin/bash
+
+update_openbox_autostart_mods () {
+	echo "hey autostart bat"
+	#touch /home/${USER}/.config/openbox/autostart
+    mv $HOME/.config/openbox/autostart /.config/openbox/autostart-baked-up
+	cp cbsysfiles2/config/openbox/autostart $HOME/.config/openbox/ 
+}
+
+update_openbox_autostart_mods
