@@ -13,17 +13,19 @@ desktop-base
 tint2
 clipit
 suckless-tools
+
+# added by me
+mate-power-manager
+radiotray
+pcmanfm
+
+###############
 gmrun
 nitrogen
 hsetroot
 conky-all
 compton
-#added #############
-radiotray #added #############
-#deluge
-#pcmanfm
-#terminator
-##########
+terminator
 xfce4-terminal
 geany
 mirage
@@ -143,11 +145,8 @@ galculator
 gigolo
 catfish
 hexchat
-#transmission-gtk
-#xfce4-power-manager
-
-## added this to see if battery icon will show
-mate-power-manager
+transmission-gtk
+xfce4-power-manager
 #xfce4-power-manager-plugins
 ghostscript
 e2fsprogs
