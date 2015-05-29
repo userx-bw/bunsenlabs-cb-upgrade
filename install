@@ -22,6 +22,18 @@
 # backups of system files replaced during the install.
 
 ################################################
+################################################
+#
+# Modded By Michael Heras - userx-bw ~ userxbw@gmail
+#
+# Last Mod DATE MAY - 28 - 2015 
+# 
+#
+#
+###################################################################
+
+
+
 
 set -o nounset # do not accept unset variables
 # If not running in terminal, exit with message
@@ -41,6 +53,9 @@ logfile=error.log # temporary logfile in installer directory
 exec > >( tee -a "$logfile" ) 2>&1
 
 user=$USER
+
+
+################## NEEDED FILES FOR OVER ALL SCRIPT #############
 
 msg() {
     echo "
@@ -139,6 +154,183 @@ net_test() {
     return 1
 }
 
+
+#################### UPGRADE BLOCK #######################
+############### ADDED BY USERX-BW (enhancements) #################################
+# Line of upgrade 
+# 1. change sources list to jessie no need to check to see what they have, just 
+#    give them what they need.
+#
+# 2. remove unnessasry files
+# 3. remove left overs
+#
+# 
+cleanup_cb_leftovers () {
+		#sudo -v
+	    sudo apt-get autoremove
+}
+
+remove_cb_customizations () { # removes just enough to get BL customizations installed
+	echo "Remove CB Custom installs"
+	sudo -v
+	sudo apt-get remove tint2conf compton-git cb-configs
+	# to remove whats left after removing CB stuff
+	cleanup_cb_leftovers	
+}
+
+
+fix_cb_os_sources_list () { ## just move the old sources.list over into a back up file it's no longer needed
+							## then put a new fresh copy of Jessie's in
+							# Spaces it out
+							echo;echo;echo;echo
+							#sudo -v
+							bigmsg "Will now attempt to change your Sources List to Debian Jessie
+	     if it fails to so, then you can go back and manually change them
+	     your self then run the script again. 
+	     If you need help then go here http://bunsenlabs.org 
+	     Then do a how to change sources.list search in the Forums
+	     then just run the script again."
+	     echo;echo;echo;echo #spacing
+	sleep 5s  # Give OP time to read it and understand it
+	
+	log "changing sources.list for upgrade"
+	
+	sudo mv /etc/apt/sources.list /etc/apt/sources.list.bk
+	sudo cp cbsysfiles1/etc/apt/sources.list /etc/apt/
+	
+	
+	remove_cb_customizations  
+}
+
+
+cb_install_update2 () {
+	msg "If your see anything that has to do with Crunchbang and you're Not upgrading you should be ok ... :D"
+	     fix_cb_sources_list2
+}
+
+
+### maybe used in the end of script for both before completing as it ensures complience to
+### Debians Directories 
+set_filemanager_bookmarks () {
+	
+    bigmsg "But first ${USER} before that takes place "
+    touch /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Documents Documents' > /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Downloads Downloads' >> /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Music Music ' >> /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Pictures Pictures' >> /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Videos Videos' >>  /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Templates Templates' >> /home/${USER}/.gtk-bookmarks
+}
+
+
+# replaces autostart after upgrade because of netinstall 
+# Due to adding MATE-POWER-MANAGER to show a battery!!!!
+
+update_openbox_autostart_mods () {
+	mv $HOME/.config/openbox/autostart $HOME/.config/openbox/autostart-baked-up
+	cp cbsysfiles2/config/openbox/autostart $HOME/.config/openbox/ 
+}
+
+
+
+################################# END UPGRADE BLOCK ###############
+
+
+
+########### MESSAGES BLOCK #########################
+
+option1() {
+    echo "
+$1
+(press enter to agree, any other key to pass)
+"
+    read -srn1
+    [[ $REPLY ]] && { log "$user did not agree"; return 1; }
+    log "$user agreed"
+    return 0
+}
+
+option2() {
+    echo "
+$1
+(press enter to agree, any other key to pass)
+"
+    read -srn1
+    [[ $REPLY ]] && { log "$user did not agree"; return 1; }
+    log "$user agreed"
+    return 0
+}
+
+
+getanswer() {
+	  echo "(y/n)"
+	  read choice
+	if [[ "${choice}" = 'y' || "${choice}" = 'Y' ]] ; then
+	   msg "Then this is what we will try to do for you $user" 
+	   log "$user said yes" 
+	   fix_cb_os_sources_list
+	  else
+	   bigmsg "Then what are you trying to do? Please send John an Email to let him know. I am sure He'd love to hear from you. Goodbye $user!" 
+         log "user said no"  
+         exit 
+	fi
+}
+
+less_than_8 () {
+	msg "Are you attempting to upgrade from a privious version of Debian or
+	Crunchbang, if yes would you like to do so?"
+	getanswer
+}
+
+greater_than_8 () {
+	msg "It looks like you have Jessie already installed. Would you like to?"
+
+}
+
+
+#################### END MESSAGES BLOCK
+
+####################### START HERE FOR FINDING OUT WHAT THE OP WANTS #####
+
+check_version () {
+      
+        d="$(cat /etc/debian_version)"
+    
+        if [[ "${d%.*}" -lt 8 ]] ; then
+         # less then 8 upgrade
+         #ask if trying to upgrade and if they want to
+        echo "versions is  ${d}" 
+        less_than_8
+         
+        else
+        # greater then 8 possiable netinstall
+        ## see if it just runs with out error as it is already Jessie
+        # no matter if startx is installed or not
+        ## apt-get takes care of it
+	bigmsg "You're looking like a $d --- "
+	 
+        
+        fi
+ }
+ 
+
+
+
+
+########### END FINDING OUT ########################################
+
+
+
+
+
+
+
+
+########################################################################
+############ START INSTALL ##############
+## check to see if in god mode if yes then kick them out
+
 trap 'giveup "Script terminated." 1' 1 2 3 15
 [[ $user = root ]] && giveup "This script should be run by a normal user, not root" 1
 
@@ -158,9 +350,15 @@ installation of the Debian Jessie CORE SYSTEM ONLY.
 (See \"Debian Netinstall Hints\" in the README file.)
 "
 confirm "Would you like to start the install now?" 0
-
+#### TEST FOR CONNECTION TO INTERNET ##############
 net_test || giveup "You do not seem to have a working network connection.
 Please fix this issue and run the script again." 1
+
+
+################# CHECK TO SEE IF SYSTEM NEEDS FILES
+###### DOES NOT MATTER IF UPGRADE OR
+###### NETINETSLL APT-GET TAKES CARE OF IT ?
+
 
 # check for needed files
 missing_files=
@@ -179,20 +377,39 @@ exec > >( tee -a "$logfile" ) 2>&1
 bigmsg "messages are being saved to $logfile"
 cp -f pkgs-recs pkgs-norecs config upgrade-bunsen-pkgs undo "$log_dir"
 
-# check debian version FIXME Is /etc/debian_version the best way?
-grep -q '\(jessie\|\(^\|[^a-zA-Z0-9.]\)8\($\|[^a-zA-Z0-9]\)\)' /etc/debian_version && msg "Debian version: OK"|| { warnlog "/etc/debian_version reads: $(cat /etc/debian_version)"
-    confirm "You do not appear to have Debian Jessie installed.
-If you think this is incorrect,
-you may wish to continue with the installation,
-otherwise it would be safer to stop.
-Would you like to continue anyway?" 1; }
+########################################################################
+##
+##  REMOVED CHECKING DEBIAN REPLACED WITH THIS FUNCTION
+##
+bigmsg "checking Version now"
+check_version
+########################################################################
 
+
+# check debian version FIXME Is /etc/debian_version the best way?
+#grep -q '\(jessie\|\(^\|[^a-zA-Z0-9.]\)8\($\|[^a-zA-Z0-9]\)\)' /etc/debian_version && msg "Debian version: OK"|| { warnlog "/etc/debian_version reads: $(cat /etc/debian_version)"
+ #   confirm "You do not appear to have Debian Jessie installed.
+# If you think this is incorrect,
+# you may wish to continue with the installation,
+#otherwise it would be safer to stop.
+#  Would you like to continue anyway?" 1; }
+
+
+
+#######################################
+##
+## REMOVED CHECK FOR STARTX
+## NOT NEEDED FOR DEBAIN 8 LXDE and CB UPgrade
+##
+##################################################################
 # is X already installed? FIXME Is this the best way to check if there is a desktop system installed already?
-hash startx > /dev/null 2>&1 && { warnlog "Command 'startx' is available. Desktop system already installed?"
-    confirm "You seem to have some kind of desktop environment already installed.
-If you continue with this installation you may have problems,
-or even end up with an unusable system.
-Would you like to continue anyway?" 1; }
+#hash startx > /dev/null 2>&1 && { warnlog "Command 'startx' is available. Desktop system already installed?"
+ #   confirm "You seem to have some kind of desktop environment already installed.
+#If you continue with this installation you may have problems,
+#or even end up with an unusable system.
+#Would you like to continue anyway?" 1; }
+##############################################################################################################
+
 
 # can use sudo?
 echo "
@@ -391,7 +608,7 @@ bigmsg "Apt settings adjusted."
 
 bigmsg "Installing packages needed for the system.
 This may take some time."
-#bigmsg "Please press 'y' if prompted at some point."
+ 
 
 msg "updating apt database..."
 sudo apt-get --quiet update  || {
@@ -479,14 +696,7 @@ install_sysdir sysfiles2 / "${backup_dir}"
 shopt -u dotglob
 bigmsg "system files installed"
 
-#bigmsg "Updating your personal configuration files.
-#Replaced files wil be backed up with a suffix of $backup_suffix"
-
-#shopt -s dotglob # want dotfiles too
-#install_userdir /etc/skel $HOME
-#shopt -u dotglob
-
-#bigmsg "Files updated."
+ 
 
 # final tweaking
 bigmsg "Adjusting some system settings."
@@ -494,6 +704,15 @@ bigmsg "Adjusting some system settings."
     . postinstall_commands
 }
 
+
+#### ADDED USERX-BW CODE ############
+
+bigmsg "Hey guess what $USER -- > Almost Done..."  
+
+# clean any left overs 
+cleanup_cb_leftovers
+
+#####################################
 
 bigmsg "INSTALL FINISHED!"
 confirm "You need to restart your computer to log into your new system.
