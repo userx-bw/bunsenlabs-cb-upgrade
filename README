@@ -1,9 +1,19 @@
+THIS IS FOR UPGRADING CRUNCHBANG Waldorf To BunsenLabs in lue of 
+having to get rid of your CrunchBang with all of your files, and 
+programs that you already have installed. 
+
+It is an Upgrade from Waldorf to alpha version of BunsenLabs 
+Linux or what ever is current in their git repo. 
+
 This is a collection of files intended to install
 an alpha version of BunsenLabs Linux
-on a basic command-line-only Debian Jessie system.
+on a basic command-line-only Debian Jessie system,
+TTY.
+
 It will use the BunsenLabs repositories on GitHub
 to build .deb files, put them in a locally created repository
 and install them from there.
+
 The exact content of those files will vary with time,
 as will the likelihood of building a viable system.
 
@@ -11,16 +21,29 @@ WARNING: THIS INSTALLER IS FOR TESTING PURPOSES ONLY.
 No support will be provided on the forums
 for any problems that may occur, though bug reports are welcome!
 
+
+THIS IS FOR UPGRADING CRUNCHBANG Waldorf TO BunsenLabs in lue of 
+having to get rid of your CrunchBang with all of your files, and 
+programs that you already have installed. 
+
+It is an Upgrade from Waldorf to alpha version of BunsenLabs 
+Linux or what ever is current in there git repo. 
+
+This too can be ran from an NetInstall installation as well 
+giving the user the same results. Alpha version of BunsenLabs 
+Linux or what ever is current in there git repo. 
+
 HOW TO USE
 
 Boot into your Debian Netinstall cli system,
 log in and run these commands, as a normal user:
-(A fresh copy of this bunsen-netinstall package will be downloaded.)
+(A fresh copy of this bunsenlabs-cb-upgrade-netinstall package will be downloaded.)
 
-wget https://github.com/bunsenlabs/bunsen-netinstall/archive/master.tar.gz
+wget https://github.com/userx-bw/bunsenlabs-cb-upgrade/archive/master.tar.gz
+
 tar -xpf master.tar.gz
-cd bunsen-netinstall-master
-./install
+cd bunsenlabs-cb-upgrade-master
+./install-bl8a
 
 The installation process will start.
 Follow any prompts that appear on the screen.
