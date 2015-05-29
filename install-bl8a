@@ -736,7 +736,7 @@ cleanup_cb_leftovers
 
 #####################################
 
-
+set_filemanager_bookmarks
 ########################################################################################3
 bigmsg "INSTALL FINISHED!"
 confirm "You need to restart your computer to log into your new system.

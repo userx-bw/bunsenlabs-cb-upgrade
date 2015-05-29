@@ -20,7 +20,7 @@
 # This may safely be removed if the installation was successful.
 # A folder /backup (or other name) on your root file system will hold
 # backups of system files replaced during the install.
-
+# modded by Michael Heras - aka userx-bw May, 20, 2015
 ################################################
 
 set -o nounset # do not accept unset variables
