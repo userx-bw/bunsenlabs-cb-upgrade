@@ -139,11 +139,14 @@ net_test() {
 #################### UPGRADE BLOCK #######################
 ############### ADDED BY USERX-BW (enhancements) #################################
 # Line of upgrade 
-# 1. change sources list to jessie no need to check to see what they have, just 
-#    give them what they need.
-#
-# 2. remove unnessasry files
-# 3. remove left overs
+# 1. check version
+# 2. if upgrade then just change sources list to jessie no need to check
+#    to see what they have, just give them what they need.
+# 3. remove unnessasry files
+# 4. run the script getting upgrades, installing them, then checking, 
+#    then installing needed files for BL then git build and install of BL 
+# 5. remove left overs
+# 6. reboot into new BunsenLabs -- 
 #
 # 
 cleanup_cb_leftovers () {
@@ -206,18 +209,13 @@ echo 'file:///home/'${USER}'/Templates Templates' >> /home/${USER}/.gtk-bookmark
 
 
 # replaces autostart after upgrade because of netinstall 
-
+# NOT USED KEEPING JUST INCASE --
 update_openbox_autostart_mods () {
 	mv $HOME/.config/openbox/autostart $HOME/.config/openbox/autostart-baked-up
 	cp cbsysfiles2/config/openbox/autostart $HOME/.config/openbox/ 
 }
-
-
-
 ################################# END UPGRADE BLOCK ###############
-
-
-
+###############################################################
 ########### MESSAGES BLOCK #########################
 
 option() {
@@ -255,18 +253,6 @@ getanswer() {
          log "user said no"  
          exit 
 	fi
-	
-	### crappy BASH case statments couldn't get it to work so I did an if statment instead
-	
-#read -p "(y/n)?" choice
-#case "$choice" in 
- # y|Y )  msg "Then this is what we will try to do for you $user" log "$user said yes" fix_cb_os_sources_list ;; # function to get and install then finish this script
- #   n|N )  bigmsg "Then what are you trying to do? Please send John an Email to let him know I am sure He'd love to hear from you. goodbye $user!" log "user said no"  
-         #return 1 
-        # ;; # joke that maybe be removed when it is :)
- # esac
-
-
 }
 
 less_than_8 () {
@@ -281,7 +267,7 @@ greater_than_8 () {
 }
 
 
-#################### END MESSAGES BLOCK
+#################### END MESSAGES BLOCK ######################################
 
 ####################### START HERE FOR FINDING OUT WHAT THE OP WANTS #####
 
@@ -289,30 +275,24 @@ check_version () {
 	##grep -q '\(jessie\|\(^\|[^a-zA-Z0-9.]\)8\($\|[^a-zA-Z0-9]\)\)' /etc/debian_version && msg "Debian version: OK"|| { warnlog "/etc/debian_version reads: $(cat /etc/debian_version)"
 #     confirm "You do not appear to have Debian Jessie installed.
 
-        d="$(cat /etc/debian_version)"
+        ver="$(cat /etc/debian_version)"
         
-        if [[ "${d%.*}" -lt 8 ]] ; then
+        if [[ "${ver%.*}" -lt 8 ]] ; then
          # less then 8 upgrade
          #ask if trying to upgrade and if they want to
         echo "versions is  ${d}" 
         less_than_8
          
-      ##  else
+       else
         # greater then 8 possiable netinstall
         ## see if it just runs with out error as it is already Jessie
         # no matter if startx is installed or not
         ## apt-get takes care of it
+        bigmsg "You're looking like an $ver to me. But I bet you could
+        get you're self up to at least a 9 if you tried. :D "
         
         fi
-        
-        
-
-
 }
- 
-
-
-
 
 ########### END FINDING OUT ########################################
 
@@ -338,13 +318,9 @@ if you are comming from a netinstall installation of the Debian Jessie CORE SYST
 "
 confirm "Would you like to start the install now?" 0
 
-
-
-
 #### TEST FOR CONNECTION TO INTERNET ##############
 net_test || giveup "You do not seem to have a working network connection.
 Please fix this issue and run the script again." 1
-
 
 ################# CHECK TO SEE IF SYSTEM NEEDS FILES
 ###### DOES NOT MATTER IF UPGRADE OR NETINETSLL APT-GET TAKES CARE OF IT
@@ -366,12 +342,12 @@ exec > >( tee -a "$logfile" ) 2>&1
 bigmsg "messages are being saved to $logfile"
 cp -f pkgs-recs pkgs-norecs config upgrade-bunsen-pkgs undo "$log_dir"
 
-
+##################################
 ## if no packages missing or even if they are apt-get takes care of it
 ## call to see what gives check version to see if possiable netinstall or upgrade  
-echo "checking Version now"
+echo "Checking Version Now"
 check_version
-
+################################################################################
 ## NO LONGER MATTERS IF JESSIE IS INSTALLED OR NOT 
 ############ MOVED MESSAGE BY USERX-BW #####################
 # check debian version FIXME Is /etc/debian_version the best way?
@@ -396,9 +372,7 @@ check_version
 #or even end up with an unusable system. This too applies if you are using this
 #for a NetInstall as well." 1; }
 
-
-
-# can use sudo?
+# Need to use sudo for apt-get 's?
 echo "
 You will need your password to perform certain system tasks.
 Please enter it now and it will be stored for a while.
@@ -696,17 +670,6 @@ install_sysdir sysfiles2 / "${backup_dir}"
 shopt -u dotglob
 bigmsg "system files installed"
 
-#bigmsg "Updating your personal configuration files.
-#Replaced files wil be backed up with a suffix of $backup_suffix"
-
-#shopt -s dotglob # want dotfiles too
-#install_userdir /etc/skel $HOME
-#shopt -u dotglob
-
-#bigmsg "Files updated."
-
-
-
 # final tweaking
 bigmsg "Adjusting some system settings."
 [[ -r postinstall_commands ]] && {
@@ -714,29 +677,16 @@ bigmsg "Adjusting some system settings."
 }
 
 ####  ADDED BY USERX-BW #########
-
-# fix book marks to make them corraspond to Debian 8 new way of doing it
-# Does not touch OP data in the "Obsolete Directories"
-#msg "fixing filemanager bookmarks / setting them to Debians
-#no data will be move into the new Debian Default Directories
-#you will have to do that yourself."
-set_filemanager_bookmarks ## reset bookmarks if upgrade, if not it still does not hurt anything
-
-### copies a copy of autostart with mods to it
-update_openbox_autostart_mods 
-
-
 bigmsg "Hey guess what $USER -- > Almost Done..."  
-
-
-#### ADDED USERX-BW CODE ############
 
 # clean any left overs 
 cleanup_cb_leftovers
 
+#Just for CB upgrade 
 #####################################
-
-set_filemanager_bookmarks
+if [[ "${ver}" -lt 8 ]] ; then
+		set_filemanager_bookmarks
+fi
 ########################################################################################3
 bigmsg "INSTALL FINISHED!"
 confirm "You need to restart your computer to log into your new system.
