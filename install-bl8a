@@ -20,7 +20,9 @@
 # This may safely be removed if the installation was successful.
 # A folder /backup (or other name) on your root file system will hold
 # backups of system files replaced during the install.
-
+# MODDED FOR CRUNCHBANG UPGRADE TO BUNLENLABS BY
+# MICHAEL HERAS - userx-bw
+# Last update May 29, 2015
 ################################################
 
 set -o nounset # do not accept unset variables
@@ -43,7 +45,7 @@ exec > >( tee -a "$logfile" ) 2>&1
 user=$USER
 
 
-################## NEEDED FILES FOR OVER ALL SCRIPT #############
+################## NEEDED Functions  FOR OVER ALL SCRIPT #############
 msg() {
     echo "
     $1
@@ -133,7 +135,7 @@ net_test() {
 }
 
 
-################## END NEEDED FILES FOR OVER ALL SCRIPT #############
+################## END NEEDED Functions FOR OVER ALL SCRIPT #############
 
 
 #################### UPGRADE BLOCK #######################
@@ -269,7 +271,7 @@ greater_than_8 () {
 
 #################### END MESSAGES BLOCK ######################################
 
-####################### START HERE FOR FINDING OUT WHAT THE OP WANTS #####
+####################### START HERE FOR FINDING OUT WHAT THE OPerator WANTS #####
 
 check_version () {
 	##grep -q '\(jessie\|\(^\|[^a-zA-Z0-9.]\)8\($\|[^a-zA-Z0-9]\)\)' /etc/debian_version && msg "Debian version: OK"|| { warnlog "/etc/debian_version reads: $(cat /etc/debian_version)"
