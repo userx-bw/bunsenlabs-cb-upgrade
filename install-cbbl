@@ -139,6 +139,142 @@ net_test() {
     return 1
 }
 
+
+
+
+################## END NEEDED Functions FOR OVER ALL SCRIPT #############
+
+
+#################### UPGRADE BLOCK #######################
+############### ADDED BY USERX-BW (enhancements) #################################
+# Line of upgrade 
+# 1. check version
+# 2. if upgrade then just change sources list to jessie no need to check
+#    to see what they have, just give them what they need.
+# 3. remove unnessasry files
+# 4. run the script getting upgrades, installing them, then checking, 
+#    then installing needed files for BL then git build and install of BL 
+# 5. remove left overs
+# 6. reboot into new BunsenLabs -- 
+#
+# 
+cleanup_cb_leftovers () {
+		#sudo -v
+	    sudo apt-get autoremove
+}
+
+remove_cb_customizations () { # removes just enough to get BL customizations installed
+	echo "Remove CB Custom installs"
+	sudo -v
+	sudo apt-get remove tint2conf compton-git cb-configs
+	# to remove whats left after removing CB stuff
+	log "In Upgrade: removing no longer needed files."
+	cleanup_cb_leftovers	
+	
+}
+
+
+fix_cb_os_sources_list () { ## just move the old sources.list over into a back up file it's no longer needed
+							## then put a new fresh copy of Jessie's in
+							# Spaces it out
+							echo;echo;echo;echo
+							#sudo -v
+							bigmsg "Will now attempt to change your Sources List to Debian Jessie
+	     if it fails to so, then you can go back and manually change them
+	     your self then run the script again. 
+	     If you need help then go here http://bunsenlabs.org 
+	     Then do a how to change sources.list search in the Forums
+	     then just run the script again."
+	     echo;echo;echo;echo #spacing
+	sleep 5s  # Give OP time to read it and understand it
+	
+	log "changing sources.list for upgrade"
+	
+	sudo mv /etc/apt/sources.list /etc/apt/sources.list.bk
+	sudo cp cbsysfiles1/etc/apt/sources.list /etc/apt/
+	#sudo chmod +r /etc/apt/sources.list 
+	
+	
+	remove_cb_customizations  
+}
+
+### maybe used in the end of script for both before completing as it ensures complience to
+### Debians Directories 
+set_filemanager_bookmarks () {
+	
+    bigmsg "But first ${USER} before that takes place "
+    touch /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Documents Documents' > /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Downloads Downloads' >> /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Music Music ' >> /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Pictures Pictures' >> /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Videos Videos' >>  /home/${USER}/.gtk-bookmarks
+echo 'file:///home/'${USER}'/Templates Templates' >> /home/${USER}/.gtk-bookmarks
+
+log "In Upgrade: changed BookMarks"
+}
+
+################################# END UPGRADE BLOCK ###############
+###############################################################
+########### MESSAGES BLOCK #########################
+getanswer() {
+	  echo "(y/n)"
+	  read choice
+	if [[ "${choice}" = 'y' || "${choice}" = 'Y' ]] ; then
+	   msg "Then this is what we will try to do for you $user" 
+	   log "$user said yes to Upgrade" 
+	   fix_cb_os_sources_list
+	  else
+	   bigmsg "Then what are you trying to do? Please send John an Email to let him know. I am sure He'd love to hear from you. Goodbye $user!" 
+         log "user said no to Upgrade"  
+         exit 
+	fi
+}
+
+less_than_8 () {
+	msg "Are you attempting to upgrade from a privious version of Debian or
+	Crunchbang, if yes would you like to do so?"
+	getanswer
+}
+
+greater_than_8 () {
+	msg "It looks like you have Jessie already installed. Would you like to?"
+
+}
+
+
+#################### END MESSAGES BLOCK ######################################
+
+####################### START HERE FOR FINDING OUT WHAT THE OPerator WANTS #####
+
+check_version () {
+        ver="$(cat /etc/debian_version)"
+        
+        if [[ "${ver%.*}" -lt 8 ]] ; then
+         # less then 8 upgrade
+         #ask if trying to upgrade and if they want to
+        echo "versions is  ${ver}" 
+        log "Checking Ver: it is $ver"
+        less_than_8
+         
+       else
+        # greater then 8 possiable netinstall
+        ## see if it just runs with out error as it is already Jessie
+        # no matter if startx is installed or not
+        ## apt-get takes care of it 
+        bigmsg "You're looking like an $ver to me. But I bet you could
+        get you're self up to at least a 9 if you tried. :D "
+        log "Version is equal to 8 -- ver: $ver"
+        sleep 1s
+        # just enough time to almost read it before script runs to completeness :D
+         
+        fi
+}
+
+########### END FINDING OUT ########################################
+
+## check to see if in god mode if yes then kick them out
+
 trap 'giveup "Script terminated." 1' 1 2 3 15
 [[ $user = root ]] && giveup "This script should be run by a normal user, not root" 1
 
@@ -179,21 +315,69 @@ exec > >( tee -a "$logfile" ) 2>&1
 bigmsg "messages are being saved to $logfile"
 cp -f pkgs-recs pkgs-norecs config upgrade-bunsen-pkgs undo "$log_dir"
 
+
+
+################################## ADDED by Michael Heras - userx-bw #######
+## if no packages missing or even if they are apt-get takes care of it
+## call to see what gives check version to see if possiable netinstall or upgrade  
+echo "Checking Version Now"
+check_version
+
+################################################################################################################################################################################################
+#
+#
+#
+# Versions checking in Debian only requires a number of 8 for
+# current version. If it it equal to 8 then it is the 
+# proper version to just install everything for BunsenLabs
+#
+# therefore this code is not needed. It is taken care of in the
+# function call check_version and logged in that function call
+# what the user choise to do
+#
+# Ubutu and it derivities gives a sid return in text for debian_version 
 # check debian version FIXME Is /etc/debian_version the best way?
-grep -q '\(jessie\|\(^\|[^a-zA-Z0-9.]\)8\($\|[^a-zA-Z0-9]\)\)' /etc/debian_version && msg "Debian version: OK"|| { warnlog "/etc/debian_version reads: $(cat /etc/debian_version)"
-    confirm "You do not appear to have Debian Jessie installed.
-If you think this is incorrect,
-you may wish to continue with the installation,
-otherwise it would be safer to stop.
-Would you like to continue anyway?" 1; }
+#
+#
+#
+#grep -q '\(jessie\|\(^\|[^a-zA-Z0-9.]\)8\($\|[^a-zA-Z0-9]\)\)' /etc/debian_version && msg "Debian version: OK"|| { warnlog "/etc/debian_version reads: $(cat /etc/debian_version)"
+#   confirm "You do not appear to have Debian Jessie installed.
+#If you think this is incorrect,
+#you may wish to continue with the installation,
+#otherwise it would be safer to stop.
+#Would you like to continue anyway?" 1; }
 
+
+
+##################################
+#
+#
+#
+# Not needed BECAUSE it is targeted for a NetInstall. Therefore
+# No startx should even be installed, even if it is this script
+# calls to have it installed, it if is then it will skip it
+# if it needs to be upgraded to the latest then it will upgraded it
+# to the latest needed files for startx
+#
+#                    NOTICE NOTICE NOTICE 
+#
+## Notice note to self. You question it -- not thinking that it is target explicit, disclamer
+# is this is a netinstall -- if they are trying to run it on a system with startx and it is not CrunchBang
+# then liability falls to the user not the author of the script. 
+#
 # is X already installed? FIXME Is this the best way to check if there is a desktop system installed already?
-hash startx > /dev/null 2>&1 && { warnlog "Command 'startx' is available. Desktop system already installed?"
-    confirm "You seem to have some kind of desktop environment already installed.
-If you continue with this installation you may have problems,
-or even end up with an unusable system.
-Would you like to continue anyway?" 1; }
+##   confirm "You seem to have some kind of desktop environment already installed.
+#If you continue with this installation you may have problems,
+#or even end up with an unusable system.
+#Would you like to continue anyway?" 1; }
 
+################################################################################################################
+
+
+# ASK FOR PASSWORD so script can access apt-get and changes this and 
+# do everything it needs to do with sudo
+#
+#
 # can use sudo?
 echo "
 You will need your password to perform certain system tasks.
@@ -220,9 +404,7 @@ msg "Upgrading packages..."
 sudo apt-get --quiet dist-upgrade  || giveup "There was a problem with 'apt-get dist-upgrade'.
 There may be some information in ${logfile}." 1
 
-#msg "Removing unnecessary packages..."
-#sudo apt-get --quiet autoremove  || giveup "There was a problem with 'apt-get autoremove'.
-#There may be some information in ${logfile}." 1
+ 
 
 log "Packages originally installed by the Debian netinstaller are recorded in $log_dir/netinstall-core-apps"
 [[ -f "$log_dir"/netinstall-core-apps ]] || apt-mark showmanual > "$log_dir"/netinstall-core-apps
@@ -365,7 +547,7 @@ if [[ -s extra_repos ]]; then
         msg "extra_repos already appended to /etc/apt/sources.list"
     else
         msg "adding extra repositories to sources.list"
-        sed '/deb-src/s/^/#/' /etc/apt/sources.list 2> >( tee -a "$logfile" ) > sysfiles1/etc/apt/sources.list || giveup "There was a problem editing sources.list." 1
+        sudo sed '/deb-src/s/^/#/' /etc/apt/sources.list 2> >( tee -a "$logfile" ) > sysfiles1/etc/apt/sources.list || giveup "There was a problem editing sources.list." 1
         cat extra_repos 2> >( tee -a "$logfile" ) >> sysfiles1/etc/apt/sources.list || giveup "There was a problem appending extra_repos to sources.list." 1
     fi
 elif [[ -r gen_sources ]]; then
@@ -446,12 +628,13 @@ or exit and try to fix the problems?" 1
 }
 
 bigmsg "New packages installed"
-
+# get stuff from GitHub, make local repo, install from there
+############# GIT GIT GIT GIT ############################
 # get stuff from GitHub, make local repo, install from there
 bigmsg "Importing packages from GitHub"
-[[ -r github_install ]] && {
-    . github_install
-}
+#[[ -r github_install ]] && {
+ #   . github_install
+#}
 
 
 bigmsg "Copying in new system files.
@@ -478,16 +661,7 @@ shopt -s dotglob # want dotfiles too
 install_sysdir sysfiles2 / "${backup_dir}"
 shopt -u dotglob
 bigmsg "system files installed"
-
-#bigmsg "Updating your personal configuration files.
-#Replaced files wil be backed up with a suffix of $backup_suffix"
-
-#shopt -s dotglob # want dotfiles too
-#install_userdir /etc/skel $HOME
-#shopt -u dotglob
-
-#bigmsg "Files updated."
-
+ 
 # final tweaking
 bigmsg "Adjusting some system settings."
 [[ -r postinstall_commands ]] && {
@@ -495,6 +669,26 @@ bigmsg "Adjusting some system settings."
 }
 
 
+####  ADDED BY USERX-BW #########
+bigmsg "Hey guess what $USER -- > Almost Done..."  
+
+# clean any left overs 
+# simple apt-get autoremove -- to ensure no left overs
+# BunsenLabs has one left over too
+cleanup_cb_leftovers
+
+#Just for CB upgrade 
+# too taken care of in postinstall 
+# but no harm in doing it twice if 
+# it does. In case of second run
+# of script CB.
+# 
+#####################################
+if [[ "${ver%.*}" -le 8 ]] ; then
+
+		set_filemanager_bookmarks
+fi
+###################################
 bigmsg "INSTALL FINISHED!"
 confirm "You need to restart your computer to log into your new system.
 Would you like to continue to restart now,
