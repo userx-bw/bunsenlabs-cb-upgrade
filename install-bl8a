@@ -209,13 +209,6 @@ echo 'file:///home/'${USER}'/Videos Videos' >>  /home/${USER}/.gtk-bookmarks
 echo 'file:///home/'${USER}'/Templates Templates' >> /home/${USER}/.gtk-bookmarks
 }
 
-
-# replaces autostart after upgrade because of netinstall 
-# NOT USED KEEPING JUST INCASE --
-update_openbox_autostart_mods () {
-	mv $HOME/.config/openbox/autostart $HOME/.config/openbox/autostart-baked-up
-	cp cbsysfiles2/config/openbox/autostart $HOME/.config/openbox/ 
-}
 ################################# END UPGRADE BLOCK ###############
 ###############################################################
 ########### MESSAGES BLOCK #########################
@@ -282,7 +275,7 @@ check_version () {
         if [[ "${ver%.*}" -lt 8 ]] ; then
          # less then 8 upgrade
          #ask if trying to upgrade and if they want to
-        echo "versions is  ${d}" 
+        echo "versions is  ${ver}" 
         less_than_8
          
        else
