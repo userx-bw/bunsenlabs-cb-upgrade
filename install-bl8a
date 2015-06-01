@@ -20,7 +20,7 @@
 # This may safely be removed if the installation was successful.
 # A folder /backup (or other name) on your root file system will hold
 # backups of system files replaced during the install.
-#
+# Written by JohnRaff
 #
 # Crunchbang mod added by Michael Heras -- aka userx-bw
 # May 29, 2015 updated
@@ -220,7 +220,8 @@ log "In Upgrade: changed BookMarks"
 ################################# END UPGRADE BLOCK ###############
 ###############################################################
 ########### MESSAGES BLOCK #########################
-getanswer() {
+getanswer() { ## Check to see if OP / user is still wanting to upgrade
+	          ## prior function call checks for version of Debian
 	  echo "(y/n)"
 	  read choice
 	if [[ "${choice}" = 'y' || "${choice}" = 'Y' ]] ; then
@@ -250,7 +251,8 @@ greater_than_8 () {
 
 ####################### START HERE FOR FINDING OUT WHAT THE OPerator WANTS #####
 
-check_version () {
+check_version () { ## Looks at debian_version strips off right side turning   
+	               # float to integer so that bash can evaluate the veritable 
         ver="$(cat /etc/debian_version)"
         
         if [[ "${ver%.*}" -lt 8 ]] ; then
@@ -406,10 +408,14 @@ sudo apt-get --quiet update  || giveup "There was a problem with 'apt-get update
 There may be some information in ${logfile}." 1
 
 msg "Upgrading packages..."
+
+if [[ "${ver%.*}" -eq 8 ]] ; then
 sudo apt-get --quiet dist-upgrade  || giveup "There was a problem with 'apt-get dist-upgrade'.
 There may be some information in ${logfile}." 1
-
- 
+else
+sudo apt-get --quiet upgrade  || giveup "There was a problem with 'apt-get dist-upgrade'.
+There may be some information in ${logfile}." 1
+fi
 
 log "Packages originally installed by the Debian netinstaller are recorded in $log_dir/netinstall-core-apps"
 [[ -f "$log_dir"/netinstall-core-apps ]] || apt-mark showmanual > "$log_dir"/netinstall-core-apps
@@ -689,11 +695,10 @@ cleanup_cb_leftovers
 # of script CB.
 # 
 #####################################
-if [[ "${ver%.*}" -le 8 ]] ; then
 
-		set_filemanager_bookmarks
-fi
-###################################
+
+set_filemanager_bookmarks
+##################################
 bigmsg "INSTALL FINISHED!"
 confirm "You need to restart your computer to log into your new system.
 Would you like to continue to restart now,
