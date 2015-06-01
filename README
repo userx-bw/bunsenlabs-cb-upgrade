@@ -32,6 +32,7 @@ control to BunsenLabs to do the rest within the script that was written
 by BunsenLabs, for test purposes. 
 
 Yet BunsenLabs does hold within there git repo a upgrade post install script
+(at the writting of this file)
 to take the existing test purposes only install then upgrade it to the lastest 
 BunsenLabs meta packages, incase they update them in the future sence the 
 time one has already installed there packages onto there system. 
