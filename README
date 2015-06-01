@@ -2,8 +2,38 @@ THIS IS FOR UPGRADING CRUNCHBANG Waldorf To BunsenLabs in lue of
 having to get rid of your CrunchBang with all of your files, and 
 programs that you already have installed. 
 
-It is an Upgrade from Waldorf to alpha version of BunsenLabs 
-Linux or what ever is current in their git repo. 
+The majority of this script was written by JohnRaff, I just seen
+it's potentual then put it to use in using this script to
+set the Debian / Crunchbang to an upgrade status so that the
+rest of this script will do the rest of the work needed to
+do in order to have BunsenLabs installed onto the system, keeping it
+as close to a Crunchbang by a different name BunsenLabs as they keep in 
+compete control of this process within the use of this script. 
+
+Unless they make major changes to the script that this is just a copy of
+that makes major changes to the install process that they use with git.  
+
+It is an Upgrade from Waldorf to Jessie then to BunsenLabs 
+Linux or what ever is current in their git repo. It has been set as 
+an sub-aplha by the owner and maintainer of BunsenLabs git, I have no
+control over this version control. It is there work that they have done
+to make Crunchbang live on as best to there abilties. 
+
+I will try to keep this script as close to there as possiable because
+this is just a working copy of there script to begin with. I only added 
+the abiltiy for it to upgrade a wheezy to Jessie then give up the control to
+BunsenLabs to do the rest within the script that was written for test 
+purposes. 
+
+Yet BunsenLabs does hold within there git repo a upgrade post install script
+to take the existing test purposes only install then upgrade it to the lastest 
+BunsenLabs meta packages, incase they update them in the future sence the 
+time one has already installed there packages onto there system. 
+
+this implies that it is closer to stable then not, but do play it safe as
+a rule to live by, CYA (cover your ass) and Back up all essential files
+before upgrading anyhing thing no matter what operating system you choose
+to use. 
 
 This is a collection of files intended to install
 an alpha version of BunsenLabs Linux
