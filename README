@@ -10,27 +10,33 @@ do in order to have BunsenLabs installed onto the system, keeping it
 as close to a Crunchbang by a different name BunsenLabs as they keep in 
 compete control of this process within the use of this script. 
 
-Unless they make major changes to the script that this is just a copy of
-that makes major changes to the install process that they use with git.  
+Unless they make major changes to there script that this is just a copy of
+then no real changes are needed to be made to this script.
 
-It is an Upgrade from Waldorf to Jessie then to BunsenLabs 
-Linux or what ever is current in their git repo. It has been set as 
-an sub-aplha by the owner and maintainer of BunsenLabs git, I have no
-control over this version control. It is there work that they have done
-to make Crunchbang live on as best to there abilties. 
+Because the upgrading and installing of Jessie / openbox and BunsenLabs
+process within this script has been written by JonhRaff and not I.  
 
-I will try to keep this script as close to there as possiable because
-this is just a working copy of there script to begin with. I only added 
-the abiltiy for it to upgrade a wheezy to Jessie then give up the control to
-BunsenLabs to do the rest within the script that was written for test 
-purposes. 
+This has just been modified enough to Upgrade from Waldorf to Jessie 
+then to BunsenLabs Linux or what ever is current in their git repo. 
+
+It has been set as an sub-aplha script by the owner and maintainer of 
+BunsenLabs git, I have no control over this version control.
+
+It is there work that they have done to make Crunchbang live on as best 
+to there abilties. 
+
+I will try to keep this script as close to there current one as possiable 
+because this is just a working copy of there script to begin with. I only
+added the abiltiy for it to upgrade a wheezy to Jessie then give up the
+control to BunsenLabs to do the rest within the script that was written 
+by BunsenLabs, for test purposes. 
 
 Yet BunsenLabs does hold within there git repo a upgrade post install script
 to take the existing test purposes only install then upgrade it to the lastest 
 BunsenLabs meta packages, incase they update them in the future sence the 
 time one has already installed there packages onto there system. 
 
-this implies that it is closer to stable then not, but do play it safe as
+This implies that it is closer to stable then not, but do play it safe as
 a rule to live by, CYA (cover your ass) and Back up all essential files
 before upgrading anyhing thing no matter what operating system you choose
 to use. 
