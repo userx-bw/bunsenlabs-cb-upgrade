@@ -37,6 +37,12 @@ to take the existing test purposes only install then upgrade it to the lastest
 BunsenLabs meta packages, incase they update them in the future sence the 
 time one has already installed there packages onto there system. 
 
+In lue of having to run this script all over again making it a redundant 
+process, a smaller faster script was written by them for them to be used
+for there BunsenLabs meta packages to be upgraded to the latest version,
+as everything else that has already been upgrade and is maintained by Debain
+Repos. 
+
 This implies that it is closer to stable then not, but do play it safe as
 a rule to live by, CYA (cover your ass) and Back up all essential files
 before upgrading anyhing thing no matter what operating system you choose
