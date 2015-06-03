@@ -38,15 +38,60 @@ BunsenLabs meta packages, incase they update them in the future sence the
 time one has already installed there packages onto there system. 
 
 In lue of having to run this script all over again making it a redundant 
-process, a smaller faster script was written by them for them to be used
+process, a smaller faster script was written by them for the user to be used
 for there BunsenLabs meta packages to be upgraded to the latest version,
 as everything else that has already been upgrade and is maintained by Debain
 Repos. 
 
-This implies that it is closer to stable then not, but do play it safe as
-a rule to live by, CYA (cover your ass) and Back up all essential files
-before upgrading anyhing thing no matter what operating system you choose
-to use. 
+This is for the ease to install any updates that they have done to anything 
+that they have written so to keep the "end user" from having to go though the
+entire procees again if they where to use the install script instead. 
+
+
+                    ********** FURTHERMORE **********
+
+This script is part of and in relastionship to BunsenLabs / netinstall script.
+It is still in the testing phase of their work in hopes of
+getting this out distribution out to the public. 
+
+Therefore, the upgrading of your product to BunsenLabs is too 
+now part of the same. Reguardless if they will support you in anything
+that may or may not go wrong with your system after the installation of
+this sub-alpha Installation / upgrade of their pre-production product. 
+
+The stability of your system is now put into the same state
+of stability that everything that has any effect on it that uses BunsenLabs to 
+control said system and has to do with effecting the same said system is now
+in the hands of the user of same said system.
+
+I and the the owners and maintainers of same said pre-production product  
+BunsenLabs holds no liability to any damage that may or has been done to your
+system be it direct or indirectly caused by any software that holds or is
+attached to the BunsenLabs "Logo" or anything affiliated with same said product.  
+
+Liability falls to the owner of the same said system that has been effected,
+because of the state that BunsenLabs is in. Which is a pre-production release
+that is still in the testing phase of it's product. 
+
+Therefore the end user of this script or JohnRaffs Script or anything remotely
+connected to it that has to do with the BunsenLabs "Logo" and anything that is
+associated with it takes full responsibility and all liability for any accured
+damages that has or may have been caused by the use of this script, or the 
+original script in which it came from. Be it monies or loss of data or anything 
+attached to any damage whatsoever accured by the use of, or any part of this script
+the sole liability falls to the owner of same effected system.
+
+By the use of this script or any part of it is an agreement by the user of same said script
+in its entirety or any part of it that the user of this same said script or any part of it
+has read and understood the terms and conditions of this warnings of the use of said script
+and any effects that may occure due to the using of test/experiential
+software in connection to the orgainal software that makes up the entire operating system
+that may or may not damage it in part or whole.
+ 
+The user of said script in its entirety or any part of it takes full responsibility and all liability
+of any kind. It falls directly onto the end user of said script or any part of it. Reguardless, 
+if it is damage that is caused by this script or the experiential part of the software that has been 
+installed by the use of this script or any part of it thereof.
 
 This is a collection of files intended to install
 an alpha version of BunsenLabs Linux
